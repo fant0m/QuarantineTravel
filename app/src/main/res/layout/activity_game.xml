@@ -20,20 +20,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
+    <TextSwitcher
         android:id="@+id/question"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#80000000"
-        android:fontFamily="sans-serif-light"
-        android:gravity="center"
-        android:padding="6dp"
-        android:textColor="@color/colorWhite"
-        android:textSize="42sp"
         app:layout_constraintBottom_toTopOf="@+id/answers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBarValues" />
+        app:layout_constraintTop_toBottomOf="@+id/topBarValues">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="42sp"
+            android:padding="6dp"
+            android:fontFamily="sans-serif-light" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="42sp"
+            android:padding="6dp"
+            android:fontFamily="sans-serif-light" />
+    </TextSwitcher>
 
     <LinearLayout
         android:id="@+id/answers"
@@ -204,12 +216,13 @@
 
         <ImageView
             android:id="@+id/imageWrong"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintBottom_toTopOf="@+id/feedbackTextWrong"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@android:drawable/ic_delete" />
+            android:tint="@color/colorDanger"
+            app:srcCompat="@drawable/close" />
 
         <TextView
             android:id="@+id/feedbackTextCorrect"
@@ -225,9 +238,9 @@
 
         <ImageView
             android:id="@+id/imageCorrect"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:tint="#4CAF50"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:tint="@color/colorSuccess"
             app:layout_constraintBottom_toTopOf="@+id/feedbackTextWrong"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
