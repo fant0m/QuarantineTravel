@@ -203,7 +203,9 @@ class GameActivity : AppCompatActivity() {
                 if (answerIndex === correctIndex) {
                     answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttonsuccess)
                 } else {
-                    answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttondanger)
+                    if (answerIndex !== -1) {
+                        answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttondanger)
+                    }
                     answers[correctIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttonsuccess)
                 }
 

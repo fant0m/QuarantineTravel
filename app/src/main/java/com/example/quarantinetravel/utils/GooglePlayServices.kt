@@ -35,7 +35,6 @@ class GooglePlayServices(private val activity: Activity) {
                         // The signed in account is stored in the task's result.
                         signedInAccount = task.result!!
                     } else {
-                        println("hmm not possible");
                         // Player will need to sign-in explicitly using via UI.
                         // See [sign-in best practices](http://developers.google.com/games/services/checklist) for guidance on how and when to implement Interactive Sign-in,
                         // and [Performing Interactive Sign-in](http://developers.google.com/games/services/android/signin#performing_interactive_sign-in) for details on how to implement
