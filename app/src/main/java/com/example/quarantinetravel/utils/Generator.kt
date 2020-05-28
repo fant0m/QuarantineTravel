@@ -1,9 +1,13 @@
-package com.example.quarantinetravel
+package com.example.quarantinetravel.utils
 
 class Generator {
     companion object Factory {
         fun randomTerm (length: Int = 3): String {
-            val stringLength = randomNumber(1, length)
+            val stringLength =
+                randomNumber(
+                    1,
+                    length
+                )
             var term = "";
             repeat (stringLength) {
                 term += randomLetter()

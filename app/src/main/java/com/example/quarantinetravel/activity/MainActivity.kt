@@ -1,4 +1,4 @@
-package com.example.quarantinetravel
+package com.example.quarantinetravel.activity
 
 import android.Manifest
 import android.app.Activity
@@ -8,16 +8,11 @@ import android.view.View
 import android.view.animation.TranslateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.example.quarantinetravel.R
 import com.example.quarantinetravel.utils.GooglePlayServices
 import com.example.quarantinetravel.utils.Permissions
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.games.Games
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         verifyRequiredPermissions(this);
-        //googlePlayServices = googlePlayServices(this);
 
         val title1: ImageView = findViewById(R.id.title1)
         val title2: ImageView = findViewById(R.id.title2)
@@ -49,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         title1.startAnimation(slideLeftAnimation)
         title2.startAnimation(slideRightAnimation)
 
-        val button2: ImageButton = findViewById(R.id.button2);
-        button2.setOnClickListener {
+        val leaderboardsButton: ImageButton = findViewById(R.id.leaderboardsButton);
+        leaderboardsButton.setOnClickListener {
             buttonClick();
             if (googlePlayServices.signedInAccount != null) {
                 googlePlayServices.showLeaderboard();
@@ -58,13 +52,17 @@ class MainActivity : AppCompatActivity() {
                 googlePlayServices.startSignInIntent()
             }
         }
-        val button3: ImageButton = findViewById(R.id.button3);
-        button3.setOnClickListener {
+        val settingsButton: ImageButton = findViewById(R.id.settingsButton);
+        settingsButton.setOnClickListener {
             buttonClick();
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
         }
-        val button4: ImageButton = findViewById(R.id.button4);
-        button4.setOnClickListener {
+        val infoButton: ImageButton = findViewById(R.id.infoButton);
+        infoButton.setOnClickListener {
             buttonClick();
+            val intent = Intent(this, AboutActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -77,6 +75,11 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == googlePlayServices.RC_SIGN_IN) {
             googlePlayServices.onActivityResult(data);
         }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, ExitActivity::class.java)
+        startActivity(intent)
     }
 
 

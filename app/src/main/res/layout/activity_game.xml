@@ -5,12 +5,13 @@
     android:id="@+id/board"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameActivity">
+    tools:context=".activity.GameActivity">
 
     <ImageView
         android:id="@+id/boardBg"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:contentDescription="@string/board"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_boardsvg"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -62,22 +63,19 @@
             android:id="@+id/answer1"
             style="@style/button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/answer2"
             style="@style/button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/answer3"
             style="@style/button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Button" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <LinearLayout
@@ -101,7 +99,7 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:text="Life"
+            android:text="@string/life"
             android:textColor="@color/colorWhite"
             android:textSize="24sp" />
 
@@ -116,7 +114,7 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:text="Score"
+            android:text="@string/score"
             android:textColor="@color/colorWhite"
             android:textSize="24sp" />
 
@@ -131,7 +129,7 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:text="Time"
+            android:text="@string/time"
             android:textColor="@color/colorWhite"
             android:textSize="24sp" />
 
@@ -146,20 +144,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topBarText">
 
-        <TextView
-            android:id="@+id/lifeValue"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-light"
             android:gravity="center_horizontal"
-            android:shadowColor="@color/colorPrimaryDark"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
-            android:text="0"
-            android:textColor="@color/colorWhite"
-            android:textSize="24sp" />
+            android:paddingTop="3dp">
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:numStars="3"
+                android:progressBackgroundTint="@color/colorDanger"
+                android:progressDrawable="@drawable/heart"
+                android:progressTint="@color/colorDanger"
+                android:rating="3" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/scoreValue"
@@ -172,7 +174,6 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:text="0"
             android:textColor="@color/colorWhite"
             android:textSize="24sp" />
 
@@ -187,7 +188,6 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:text="0"
             android:textColor="@color/colorWhite"
             android:textSize="24sp" />
 
@@ -206,7 +206,7 @@
             android:id="@+id/feedbackTextWrong"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wrong answer!"
+            android:text="@string/wrong_answer"
             android:textColor="@color/colorWhite"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -218,17 +218,18 @@
             android:id="@+id/imageWrong"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:contentDescription="@string/wrong"
+            android:tint="@color/colorDanger"
             app:layout_constraintBottom_toTopOf="@+id/feedbackTextWrong"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:tint="@color/colorDanger"
             app:srcCompat="@drawable/close" />
 
         <TextView
             android:id="@+id/feedbackTextCorrect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Correct answer!"
+            android:text="@string/correct_answer"
             android:textColor="@color/colorWhite"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -240,6 +241,7 @@
             android:id="@+id/imageCorrect"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:contentDescription="@string/correct"
             android:tint="@color/colorSuccess"
             app:layout_constraintBottom_toTopOf="@+id/feedbackTextWrong"
             app:layout_constraintEnd_toEndOf="parent"

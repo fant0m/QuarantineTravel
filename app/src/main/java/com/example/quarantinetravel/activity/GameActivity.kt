@@ -1,4 +1,4 @@
-package com.example.quarantinetravel
+package com.example.quarantinetravel.activity
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -13,10 +13,12 @@ import androidx.core.content.ContextCompat
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.example.quarantinetravel.*
+import com.example.quarantinetravel.api.HttpQueue
+import com.example.quarantinetravel.game.Question
+import com.example.quarantinetravel.utils.Generator
 import com.example.quarantinetravel.utils.GooglePlayServices
 import com.example.quarantinetravel.utils.LoadingBar
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.games.Games
 import kotlinx.android.synthetic.main.activity_game.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -47,7 +49,9 @@ class GameActivity : AppCompatActivity() {
         loadingBar = LoadingBar(this)
         loadingBar.show()
 
-        queue = HttpQueue.getInstance(applicationContext).requestQueue
+        queue = HttpQueue.getInstance(
+            applicationContext
+        ).requestQueue
 
         answer1.setOnClickListener { checkAnswer(0) }
         answer2.setOnClickListener { checkAnswer(1) }
@@ -65,7 +69,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun prepareQuestion (draw: Boolean = false) {
-        val randomTerm = Generator.randomTerm()
+        val randomTerm =
+            Generator.randomTerm()
         println("Got term: ${randomTerm}")
         val url = "https://api.skypicker.com/locations?term=${randomTerm}&locale=en-US&location_types=airport&limit=10&active_only=true&sort=name";
         val request = JsonObjectRequest(url, null, Response.Listener { response ->
@@ -79,10 +84,15 @@ class GameActivity : AppCompatActivity() {
                         val chosenIndexes = IntArray(OPTIONS)
 
                         var filled = 0
-                        val question = Question()
+                        val question =
+                            Question()
 
                         while (filled < OPTIONS) {
-                            val randomIndex = Generator.randomNumber(0, locationsLength - 1)
+                            val randomIndex =
+                                Generator.randomNumber(
+                                    0,
+                                    locationsLength - 1
+                                )
                             if (!chosenIndexes.contains(randomIndex + 1)) {
                                 val location: JSONObject = locations[randomIndex] as JSONObject
                                 if (filled === 0) {
@@ -143,7 +153,9 @@ class GameActivity : AppCompatActivity() {
         round++;
 
         answers.forEach {
-            it!!.background = ContextCompat.getDrawable(this, R.drawable.text_button)
+            it!!.background = ContextCompat.getDrawable(this,
+                R.drawable.text_button
+            )
         }
 
         prepareQuestion(true)
@@ -177,7 +189,9 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer (answerIndex: Int) {
-        answers[answerIndex]!!.background = ContextCompat.getDrawable(this, R.drawable.longbuttonhover2)
+        answers[answerIndex]!!.background = ContextCompat.getDrawable(this,
+            R.drawable.longbuttonhover2
+        )
         for (answer in answers) {
             answer?.isEnabled = false
         }
@@ -201,12 +215,18 @@ class GameActivity : AppCompatActivity() {
 
                 val correctIndex = question.answers.indexOfFirst { it.correct }
                 if (answerIndex === correctIndex) {
-                    answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttonsuccess)
+                    answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext,
+                        R.drawable.longbuttonsuccess
+                    )
                 } else {
                     if (answerIndex !== -1) {
-                        answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttondanger)
+                        answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext,
+                            R.drawable.longbuttondanger
+                        )
                     }
-                    answers[correctIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttonsuccess)
+                    answers[correctIndex]!!.background = ContextCompat.getDrawable(applicationContext,
+                        R.drawable.longbuttonsuccess
+                    )
                 }
 
                 feedbackTextCorrect.visibility = if (answer) View.VISIBLE else View.INVISIBLE
@@ -214,6 +234,8 @@ class GameActivity : AppCompatActivity() {
                 feedbackTextWrong.visibility = if (!answer) View.VISIBLE else View.INVISIBLE
                 imageWrong.visibility = if (!answer) View.VISIBLE else View.INVISIBLE
                 feedback.visibility = View.VISIBLE
+
+                drawLife()
             }
         }.start()
 
@@ -236,7 +258,6 @@ class GameActivity : AppCompatActivity() {
 
     private fun wrongAnswer (answerIndex: Int) {
         life--
-        drawLife()
         if (life > 0) {
             setAnswerBox(false, answerIndex)
         } else {
@@ -263,7 +284,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun drawLife () {
-        lifeValue.text = life.toString()
+        ratingBar.numStars = life;
+        ratingBar.rating = life.toFloat();
     }
 
     private fun drawTime () {

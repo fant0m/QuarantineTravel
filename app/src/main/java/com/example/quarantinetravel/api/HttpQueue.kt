@@ -1,4 +1,4 @@
-package com.example.quarantinetravel
+package com.example.quarantinetravel.api
 
 import android.content.Context
 import com.android.volley.Request
@@ -11,7 +11,8 @@ class HttpQueue constructor(context: Context) {
         private var INSTANCE: HttpQueue? = null
         fun getInstance(context: Context) =
             INSTANCE ?: synchronized(this) {
-                INSTANCE ?: HttpQueue(context).also {
+                INSTANCE
+                    ?: HttpQueue(context).also {
                     INSTANCE = it
                 }
             }

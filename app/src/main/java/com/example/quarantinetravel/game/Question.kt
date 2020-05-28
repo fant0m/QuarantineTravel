@@ -1,4 +1,4 @@
-package com.example.quarantinetravel
+package com.example.quarantinetravel.game
 
 class Question {
     var name : String = ""
