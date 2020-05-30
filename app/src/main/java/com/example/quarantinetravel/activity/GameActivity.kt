@@ -2,6 +2,7 @@ package com.example.quarantinetravel.activity
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -10,15 +11,17 @@ import android.widget.Button
 import android.widget.TextSwitcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.quarantinetravel.*
 import com.example.quarantinetravel.api.HttpQueue
 import com.example.quarantinetravel.game.Question
-import com.example.quarantinetravel.utils.Generator
-import com.example.quarantinetravel.utils.GooglePlayServices
-import com.example.quarantinetravel.utils.LoadingBar
+import com.example.quarantinetravel.util.Generator
+import com.example.quarantinetravel.util.GooglePlayServices
+import com.example.quarantinetravel.util.LoadingBar
+import com.example.quarantinetravel.util.SfxManager
 import kotlinx.android.synthetic.main.activity_game.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -26,6 +29,7 @@ import kotlin.collections.ArrayList
 
 
 class GameActivity : AppCompatActivity() {
+    private lateinit var prefs: SharedPreferences
     private var googlePlayServices : GooglePlayServices = GooglePlayServices(this)
     private lateinit var queue : RequestQueue
     private lateinit var timer : CountDownTimer
@@ -56,28 +60,27 @@ class GameActivity : AppCompatActivity() {
         answer1.setOnClickListener { checkAnswer(0) }
         answer2.setOnClickListener { checkAnswer(1) }
         answer3.setOnClickListener { checkAnswer(2) }
-        answers[0] = answer1;
-        answers[1] = answer2;
-        answers[2] = answer3;
+        answers[0] = answer1
+        answers[1] = answer2
+        answers[2] = answer3
 
-        question.setInAnimation(this, android.R.anim.slide_in_left);
-        question.setOutAnimation(this, android.R.anim.slide_out_right);
+        question.setInAnimation(this, android.R.anim.slide_in_left)
+        question.setOutAnimation(this, android.R.anim.slide_out_right)
 
         life = 5
         drawLife()
+        drawScore()
         newRound()
     }
 
     private fun prepareQuestion (draw: Boolean = false) {
         val randomTerm =
             Generator.randomTerm()
-        println("Got term: ${randomTerm}")
-        val url = "https://api.skypicker.com/locations?term=${randomTerm}&locale=en-US&location_types=airport&limit=10&active_only=true&sort=name";
+        val url = "http://api.skypicker.com/locations?term=${randomTerm}&locale=en-US&location_types=airport&limit=10&active_only=true&sort=name"
         val request = JsonObjectRequest(url, null, Response.Listener { response ->
             if (null != response) {
                 try {
                     val locations = response.getJSONArray("locations")
-                    println("Response: ${response}")
                     val locationsLength = locations.length()
                     if (locationsLength >= 3) {
                         val OPTIONS = 3
@@ -103,7 +106,7 @@ class GameActivity : AppCompatActivity() {
                                 }
 
                                 chosenIndexes[filled] = randomIndex + 1
-                                filled++;
+                                filled++
                             }
                         }
 
@@ -137,6 +140,7 @@ class GameActivity : AppCompatActivity() {
                 }
             }
         }, Response.ErrorListener {
+            it.printStackTrace()
             val builder1 = AlertDialog.Builder(this)
             builder1.setMessage("Response.ErrorListener..")
             builder1.setCancelable(true)
@@ -148,9 +152,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun newRound () {
-        println("starting new round")
-        time = 5;
-        round++;
+        time = 5
+        round++
 
         answers.forEach {
             it!!.background = ContextCompat.getDrawable(this,
@@ -178,7 +181,7 @@ class GameActivity : AppCompatActivity() {
         val ROUND_SECONDS = 500
         timer = object : CountDownTimer((ROUND_SECONDS * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                time = (millisUntilFinished / 1000).toInt();
+                time = (millisUntilFinished / 1000).toInt()
                 drawTime()
             }
 
@@ -189,6 +192,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun checkAnswer (answerIndex: Int) {
+        SfxManager.play(resources.getInteger(R.integer.sfx_click))
         answers[answerIndex]!!.background = ContextCompat.getDrawable(this,
             R.drawable.longbuttonhover2
         )
@@ -215,10 +219,12 @@ class GameActivity : AppCompatActivity() {
 
                 val correctIndex = question.answers.indexOfFirst { it.correct }
                 if (answerIndex === correctIndex) {
+                    SfxManager.play(resources.getInteger(R.integer.sfx_success))
                     answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext,
                         R.drawable.longbuttonsuccess
                     )
                 } else {
+                    SfxManager.play(resources.getInteger(R.integer.sfx_error))
                     if (answerIndex !== -1) {
                         answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext,
                             R.drawable.longbuttondanger
@@ -236,6 +242,7 @@ class GameActivity : AppCompatActivity() {
                 feedback.visibility = View.VISIBLE
 
                 drawLife()
+                drawScore()
             }
         }.start()
 
@@ -252,7 +259,6 @@ class GameActivity : AppCompatActivity() {
 
     private fun correctAnswer (answerIndex: Int) {
         score++
-        drawScore()
         setAnswerBox(true, answerIndex)
     }
 
@@ -261,21 +267,18 @@ class GameActivity : AppCompatActivity() {
         if (life > 0) {
             setAnswerBox(false, answerIndex)
         } else {
+            SfxManager.play(resources.getInteger(R.integer.sfx_error))
             gameOver()
         }
     }
 
     private fun gameOver () {
-        val builder1 = AlertDialog.Builder(this)
-        builder1.setMessage("Game over.. Score $score")
-        builder1.setCancelable(true)
+        if (score > 0) {
+            googlePlayServices.addLeaderboardScore(score.toLong())
+        }
 
-        googlePlayServices.addLeaderboardScore(score.toLong());
-
-        val alert11 = builder1.create()
-        alert11.show()
-
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, GameResultActivity::class.java)
+        intent.putExtra("score", score)
         startActivity(intent)
     }
 
@@ -284,8 +287,8 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun drawLife () {
-        ratingBar.numStars = life;
-        ratingBar.rating = life.toFloat();
+        ratingBar.numStars = life
+        ratingBar.rating = life.toFloat()
     }
 
     private fun drawTime () {

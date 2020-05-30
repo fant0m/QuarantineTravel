@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:soundEffectsEnabled="true"
     tools:context=".activity.MainActivity">
 
     <ImageView
@@ -67,6 +66,7 @@
             android:layout_marginRight="16dp"
             android:background="@drawable/icon_button"
             android:contentDescription="@string/leaderboards"
+            android:onClick="showLeaderboards"
             android:src="@drawable/trophy" />
 
         <ImageButton
@@ -77,6 +77,7 @@
             android:background="@drawable/icon_button"
             android:contentDescription="@string/settings"
             android:src="@drawable/cog"
+            android:onClick="showSettings"
             android:layout_marginEnd="16dp" />
 
         <ImageButton
@@ -85,6 +86,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/icon_button"
             android:contentDescription="@string/info"
+            android:onClick="showInfo"
             android:src="@android:drawable/ic_dialog_info" />
     </LinearLayout>
 

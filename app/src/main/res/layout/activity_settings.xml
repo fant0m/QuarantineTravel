@@ -7,80 +7,25 @@
     android:layout_margin="25dp"
     tools:context=".activity.SettingsActivity">
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/settings_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="0,1"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="4dp">
+    <Button
+        android:id="@+id/close"
+        style="@style/button"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_span="0"
+        android:onClick="close"
+        android:text="@string/close"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_container" />
 
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_column="0"
-                android:text="@string/music" />
-
-            <Switch
-                android:id="@+id/switch0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="4dp">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_column="0"
-                android:text="@string/sfx" />
-
-            <Switch
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="4dp">
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_column="0"
-                android:text="@string/google_play_services" />
-
-            <Switch
-                android:id="@+id/switch2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:checked="true" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/save"
-                style="@style/button"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_span="0"
-                android:onClick="save"
-                android:text="@string/save" />
-        </TableRow>
-    </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

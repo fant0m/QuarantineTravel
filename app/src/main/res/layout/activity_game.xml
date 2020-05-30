@@ -157,9 +157,7 @@
                 android:layout_height="wrap_content"
                 android:indeterminate="false"
                 android:numStars="3"
-                android:progressBackgroundTint="@color/colorDanger"
                 android:progressDrawable="@drawable/heart"
-                android:progressTint="@color/colorDanger"
                 android:rating="3" />
         </LinearLayout>
 

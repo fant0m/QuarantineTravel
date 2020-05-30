@@ -1,4 +1,4 @@
-package com.example.quarantinetravel.utils
+package com.example.quarantinetravel.util
 
 import android.content.Context
 import android.content.pm.PackageManager

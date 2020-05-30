@@ -1,21 +1,49 @@
 package com.example.quarantinetravel.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import com.example.quarantinetravel.R
+import com.example.quarantinetravel.fragment.SettingsFragment
+import com.example.quarantinetravel.util.GooglePlayServices
+import com.example.quarantinetravel.util.SfxManager
+
 
 class SettingsActivity : AppCompatActivity() {
+    private var googlePlayServices : GooglePlayServices = GooglePlayServices(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        this.title = getString(R.string.settings);
+        this.title = getString(R.string.settings)
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.settings_container, SettingsFragment())
+            .commit()
+
+        val prefListener = OnSharedPreferenceChangeListener { prefs, key ->
+            if (key == getString(R.string.settings_sfx)) {
+                SfxManager.sfxEnabled = prefs.getBoolean(key, false)
+            } else if (key == getString(R.string.settings_google)) {
+                val value = prefs.getBoolean(key, false)
+                if (value) {
+                    googlePlayServices.startSignInIntent()
+                } else {
+                    googlePlayServices.signOut()
+                }
+            }
+        }
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        prefs.registerOnSharedPreferenceChangeListener (prefListener)
     }
 
-    fun save(view: View) {
-        // @todo save and load settings
+    fun close(view: View) {
+        SfxManager.play(resources.getInteger(R.integer.sfx_click))
         this.finish()
     }
 }

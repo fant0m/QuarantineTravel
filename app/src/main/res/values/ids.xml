@@ -2,4 +2,11 @@
 <resources>
     <string name="app_id">427249869849</string>
     <string name="leaderboard_id">CgkImcjO0LcMEAIQAQ</string>
+    <string name="settings_music">music</string>
+    <string name="settings_sfx">sfx</string>
+    <string name="settings_google">google</string>
+    <string name="settings_firstRun">firstrun</string>
+    <integer name="sfx_click">0</integer>
+    <integer name="sfx_success">1</integer>
+    <integer name="sfx_error">2</integer>
 </resources>

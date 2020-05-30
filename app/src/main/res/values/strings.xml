@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Quarantine Travel</string>
     <string name="ok">OK</string>
-    <string name="error">Error</string>
+    <string name="error_google_play_games">Error during loading of Google Play Games!</string>
     <string name="life">Life</string>
     <string name="score">Score</string>
     <string name="time">Time</string>
@@ -23,9 +23,14 @@
     <string name="music">Music</string>
     <string name="sfx">SFX</string>
     <string name="google_play_services">Google play services</string>
-    <string name="about1">Quarantine Travel was developed as challenge \"can full-stack web developer make a game\"? Before the challenge I had zero knowledge of Kotlin and almost no knowledge of Android platform. There wouldn\'t be such motivation without Kiwi\'s mobile challenge, so big thank you!</string>
+    <string name="about1">Quarantine Travel was developed as challenge \"can full-stack web developer make an android game\"? Before the challenge I had zero knowledge of Kotlin and almost no knowledge of Android platform. There wouldn\'t be such motivation without Kiwi\'s mobile challenge, so big thank you!</string>
     <string name="about2">Game falls into \"quiz\" category. It has many different types of questions, which are focused on (air) travelling. The data comes from Kiwi.com API. Each player has 5 lives in 1 game round. The goal of the game is to gain the highest score. Players can compare their results with everyone across the globe!</string>
-    <string name="exit_info">Are you sure you want to quit the game?</string>
+    <string name="exit_info">Are you sure you want to exit the game?</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
+    <string name="close">Close</string>
+    <string name="error_login_google_at_first">Login into Google Play Games at first!</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="game_result_message">Your final score is</string>
+    <string name="cool">Cool</string>
 </resources>

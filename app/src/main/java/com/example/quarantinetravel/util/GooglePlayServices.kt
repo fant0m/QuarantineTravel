@@ -1,8 +1,9 @@
-package com.example.quarantinetravel.utils
+package com.example.quarantinetravel.util
 
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AlertDialog
+import androidx.preference.PreferenceManager
 import com.example.quarantinetravel.R
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -14,17 +15,15 @@ class GooglePlayServices(private val activity: Activity) {
     var signedInAccount : GoogleSignInAccount? = null
     val RC_SIGN_IN = 9001
     val RC_LEADERBOARD_UI = 9004
+    var leaderboards = false
 
     fun signInSilently() {
-        println("sing in silent?");
         val signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
         val account = GoogleSignIn.getLastSignedInAccount(activity)
         if (GoogleSignIn.hasPermissions(account, *signInOptions.scopeArray)) {
-            // Already signed in.
-            // The signed in account is stored in the 'account' variable.
             signedInAccount = account!!
+            writeSettings(true)
         } else {
-            // Haven't been signed-in before. Try the silent sign-in first.
             val signInClient = GoogleSignIn.getClient(activity, signInOptions)
             signInClient
                 .silentSignIn()
@@ -32,19 +31,15 @@ class GooglePlayServices(private val activity: Activity) {
                     activity
                 ) { task ->
                     if (task.isSuccessful) {
-                        // The signed in account is stored in the task's result.
                         signedInAccount = task.result!!
-                    } else {
-                        // Player will need to sign-in explicitly using via UI.
-                        // See [sign-in best practices](http://developers.google.com/games/services/checklist) for guidance on how and when to implement Interactive Sign-in,
-                        // and [Performing Interactive Sign-in](http://developers.google.com/games/services/android/signin#performing_interactive_sign-in) for details on how to implement
-                        // Interactive Sign-in.
+                        writeSettings(true)
                     }
                 }
         }
     }
 
-    fun startSignInIntent() {
+    fun startSignInIntent(leaderboards: Boolean = false) {
+        this.leaderboards = leaderboards
         val signInClient = GoogleSignIn.getClient(
             activity,
             GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
@@ -53,18 +48,26 @@ class GooglePlayServices(private val activity: Activity) {
         activity.startActivityForResult(intent, RC_SIGN_IN)
     }
 
-    fun showLeaderboard() {
-        Games.getLeaderboardsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .getLeaderboardIntent(activity.getString(R.string.leaderboard_id))
-            .addOnSuccessListener { intent -> activity.startActivityForResult(intent, RC_LEADERBOARD_UI) }
+    fun showLeaderboards() {
+        val signedAccount = if (signedInAccount != null) signedInAccount else GoogleSignIn.getLastSignedInAccount(activity)
+        if (signedAccount != null) {
+            Games.getLeaderboardsClient(activity, signedAccount)
+                .getLeaderboardIntent(activity.getString(R.string.leaderboard_id))
+                .addOnSuccessListener { intent -> activity.startActivityForResult(intent, RC_LEADERBOARD_UI) }
+        } else {
+            startSignInIntent()
+        }
     }
 
     fun addLeaderboardScore (score: Long) {
-        Games.getLeaderboardsClient(activity, GoogleSignIn.getLastSignedInAccount(activity)!!)
-            .submitScore(activity.getString(R.string.leaderboard_id), score);
+        val signedAccount = GoogleSignIn.getLastSignedInAccount(activity)
+        if (signedAccount != null) {
+            Games.getLeaderboardsClient(activity, signedAccount)
+                .submitScore(activity.getString(R.string.leaderboard_id), score)
+        }
     }
 
-    private fun signOut() {
+    fun signOut() {
         val signInClient = GoogleSignIn.getClient(
             activity,
             GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
@@ -72,7 +75,8 @@ class GooglePlayServices(private val activity: Activity) {
         signInClient.signOut().addOnCompleteListener(
             activity
         ) {
-            // at this point, the user is signed out.
+            signedInAccount = null
+            writeSettings(false)
         }
     }
 
@@ -82,15 +86,26 @@ class GooglePlayServices(private val activity: Activity) {
         if (result!!.isSuccess) {
             // The signed in account is stored in the result.
             signedInAccount = result.signInAccount!!
+            writeSettings(true)
+            if (leaderboards) {
+                leaderboards = false
+                showLeaderboards()
+            }
+
         } else {
+            signedInAccount = null
+            leaderboards = false
             var message = result.status.statusMessage
             if (message == null || message.isEmpty()) {
-                message = activity.getString(R.string.error);
+                message = activity.getString(R.string.error_google_play_games)
             }
-            println(result.status)
             AlertDialog.Builder(activity).setMessage(message)
                 .setNeutralButton(R.string.ok, null).show()
         }
     }
 
+    private fun writeSettings (value: Boolean) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+        prefs.edit().putBoolean(activity.getString(R.string.settings_google), value).apply()
+    }
 }

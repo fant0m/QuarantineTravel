@@ -1,4 +1,4 @@
-package com.example.quarantinetravel.utils
+package com.example.quarantinetravel.util
 
 class Generator {
     companion object Factory {
@@ -8,7 +8,7 @@ class Generator {
                     1,
                     length
                 )
-            var term = "";
+            var term = ""
             repeat (stringLength) {
                 term += randomLetter()
             }

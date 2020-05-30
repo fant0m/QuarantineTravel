@@ -3,20 +3,26 @@ package com.example.quarantinetravel.activity
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.view.animation.TranslateAnimation
-import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.preference.PreferenceManager
 import com.example.quarantinetravel.R
-import com.example.quarantinetravel.utils.GooglePlayServices
-import com.example.quarantinetravel.utils.Permissions
+import com.example.quarantinetravel.util.GooglePlayServices
+import com.example.quarantinetravel.util.MusicManager
+import com.example.quarantinetravel.util.Permissions
+import com.example.quarantinetravel.util.SfxManager
 
 
 class MainActivity : AppCompatActivity() {
     private var googlePlayServices : GooglePlayServices = GooglePlayServices(this)
+    private lateinit var prefs: SharedPreferences
+    //private var mp: MediaPlayer? = null
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.INTERNET,
         Manifest.permission.ACCESS_NETWORK_STATE
@@ -27,8 +33,67 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        verifyRequiredPermissions(this);
+        verifyRequiredPermissions(this)
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        if (prefs.getBoolean(getString(R.string.settings_google), false)) {
+            googlePlayServices.startSignInIntent()
+        }
+
+        SfxManager.init(
+            this,
+            prefs.getBoolean(getString(R.string.settings_sfx), true)
+        )
+        MusicManager.init(
+            this,
+            prefs.getBoolean(getString(R.string.settings_music), true)
+        )
+        MusicManager.play(R.raw.musicintro, true)
+
+        initTitleAnimation()
+
+        /*mp = MediaPlayer.create(this, R.raw.musicintro)
+        mp?.isLooping = true
+        mp?.start()*/
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MusicManager.release()
+        /*mp?.stop()
+        mp?.release()
+        mp = null*/
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        MusicManager.restart(R.raw.musicintro, true)
+        /*if (mp === null) {
+            mp = MediaPlayer.create(this, R.raw.musicintro)
+            mp?.isLooping = true
+            mp?.start()
+        }*/
+
+        if (prefs.getBoolean(getString(R.string.settings_firstRun), true)) {
+            googlePlayServices.startSignInIntent()
+            prefs.edit().putBoolean(getString(R.string.settings_firstRun), false).apply()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == googlePlayServices.RC_SIGN_IN) {
+            googlePlayServices.onActivityResult(data)
+        }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, ExitActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun initTitleAnimation () {
         val title1: ImageView = findViewById(R.id.title1)
         val title2: ImageView = findViewById(R.id.title2)
 
@@ -42,50 +107,6 @@ class MainActivity : AppCompatActivity() {
 
         title1.startAnimation(slideLeftAnimation)
         title2.startAnimation(slideRightAnimation)
-
-        val leaderboardsButton: ImageButton = findViewById(R.id.leaderboardsButton);
-        leaderboardsButton.setOnClickListener {
-            buttonClick();
-            if (googlePlayServices.signedInAccount != null) {
-                googlePlayServices.showLeaderboard();
-            } else {
-                googlePlayServices.startSignInIntent()
-            }
-        }
-        val settingsButton: ImageButton = findViewById(R.id.settingsButton);
-        settingsButton.setOnClickListener {
-            buttonClick();
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
-        val infoButton: ImageButton = findViewById(R.id.infoButton);
-        infoButton.setOnClickListener {
-            buttonClick();
-            val intent = Intent(this, AboutActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == googlePlayServices.RC_SIGN_IN) {
-            googlePlayServices.onActivityResult(data);
-        }
-    }
-
-    override fun onBackPressed() {
-        val intent = Intent(this, ExitActivity::class.java)
-        startActivity(intent)
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        googlePlayServices.signInSilently()
     }
 
     private fun verifyRequiredPermissions(activity: Activity) {
@@ -99,15 +120,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun buttonClick () {
-        //val mp: MediaPlayer = MediaPlayer.create(this, R.raw.click2)
-        //mp.start();
+    private fun buttonClick () {
+        SfxManager.play(resources.getInteger(R.integer.sfx_click))
     }
 
     fun play(view: View) {
-        buttonClick();
-
+        buttonClick()
         val intent = Intent(this, GameActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun showLeaderboards(view: View) {
+        buttonClick()
+        if (prefs.getBoolean(getString(R.string.settings_google), false)) {
+            googlePlayServices.showLeaderboards()
+        } else {
+            googlePlayServices.startSignInIntent(true)
+        }
+    }
+
+    fun showSettings(view: View) {
+        buttonClick()
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun showInfo(view: View) {
+        buttonClick()
+        val intent = Intent(this, AboutActivity::class.java)
         startActivity(intent)
     }
 }

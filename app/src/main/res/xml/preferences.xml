@@ -1,0 +1,21 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:key="@string/settings_music"
+        app:title="@string/music"
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"/>
+
+    <SwitchPreferenceCompat
+        app:key="@string/settings_sfx"
+        app:title="@string/sfx"
+        app:iconSpaceReserved="false"
+        app:defaultValue="true"/>
+
+    <SwitchPreferenceCompat
+        app:key="@string/settings_google"
+        app:title="@string/google_play_services"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>
