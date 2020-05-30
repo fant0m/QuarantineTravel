@@ -34,7 +34,8 @@ class MusicManager {
         }
 
         fun release() {
-            if (this::mp.isInitialized) {
+            if (this::mp.isInitialized && !released) {
+                mp.reset();
                 mp.release()
                 released = true
             }

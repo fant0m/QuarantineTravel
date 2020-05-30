@@ -9,6 +9,7 @@ import androidx.preference.PreferenceManager
 import com.example.quarantinetravel.R
 import com.example.quarantinetravel.fragment.SettingsFragment
 import com.example.quarantinetravel.util.GooglePlayServices
+import com.example.quarantinetravel.util.MusicManager
 import com.example.quarantinetravel.util.SfxManager
 
 
@@ -29,6 +30,14 @@ class SettingsActivity : AppCompatActivity() {
         val prefListener = OnSharedPreferenceChangeListener { prefs, key ->
             if (key == getString(R.string.settings_sfx)) {
                 SfxManager.sfxEnabled = prefs.getBoolean(key, false)
+            } else if (key == getString(R.string.settings_music)) {
+                val value = prefs.getBoolean(key, false)
+                MusicManager.musicEnabled = value
+                if (value) {
+                    MusicManager.play(R.raw.musicintro, true)
+                } else if (!value) {
+                    MusicManager.release()
+                }
             } else if (key == getString(R.string.settings_google)) {
                 val value = prefs.getBoolean(key, false)
                 if (value) {
@@ -38,6 +47,7 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         }
+
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         prefs.registerOnSharedPreferenceChangeListener (prefListener)
     }

@@ -18,10 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.example.quarantinetravel.*
 import com.example.quarantinetravel.api.HttpQueue
 import com.example.quarantinetravel.game.Question
-import com.example.quarantinetravel.util.Generator
-import com.example.quarantinetravel.util.GooglePlayServices
-import com.example.quarantinetravel.util.LoadingBar
-import com.example.quarantinetravel.util.SfxManager
+import com.example.quarantinetravel.util.*
 import kotlinx.android.synthetic.main.activity_game.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -71,6 +68,13 @@ class GameActivity : AppCompatActivity() {
         drawLife()
         drawScore()
         newRound()
+
+        MusicManager.play(R.raw.musicgame, true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        MusicManager.release()
     }
 
     private fun prepareQuestion (draw: Boolean = false) {
@@ -276,6 +280,8 @@ class GameActivity : AppCompatActivity() {
         if (score > 0) {
             googlePlayServices.addLeaderboardScore(score.toLong())
         }
+
+        MusicManager.release()
 
         val intent = Intent(this, GameResultActivity::class.java)
         intent.putExtra("score", score)

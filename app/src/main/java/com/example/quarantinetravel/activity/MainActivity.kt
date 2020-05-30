@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.view.animation.TranslateAnimation
@@ -22,7 +21,6 @@ import com.example.quarantinetravel.util.SfxManager
 class MainActivity : AppCompatActivity() {
     private var googlePlayServices : GooglePlayServices = GooglePlayServices(this)
     private lateinit var prefs: SharedPreferences
-    //private var mp: MediaPlayer? = null
     private val REQUIRED_PERMISSIONS = arrayOf(
         Manifest.permission.INTERNET,
         Manifest.permission.ACCESS_NETWORK_STATE
@@ -51,29 +49,17 @@ class MainActivity : AppCompatActivity() {
         MusicManager.play(R.raw.musicintro, true)
 
         initTitleAnimation()
-
-        /*mp = MediaPlayer.create(this, R.raw.musicintro)
-        mp?.isLooping = true
-        mp?.start()*/
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         MusicManager.release()
-        /*mp?.stop()
-        mp?.release()
-        mp = null*/
     }
 
     override fun onResume() {
         super.onResume()
 
         MusicManager.restart(R.raw.musicintro, true)
-        /*if (mp === null) {
-            mp = MediaPlayer.create(this, R.raw.musicintro)
-            mp?.isLooping = true
-            mp?.start()
-        }*/
 
         if (prefs.getBoolean(getString(R.string.settings_firstRun), true)) {
             googlePlayServices.startSignInIntent()
