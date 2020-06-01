@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
@@ -37,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         if (prefs.getBoolean(getString(R.string.settings_google), false)) {
-            googlePlayServices.startSignInIntent()
+            googlePlayServices.signInSilently()
         }
 
         SfxManager.init(
@@ -52,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         initTitleAnimation()
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
     }
 
     override fun onDestroy() {

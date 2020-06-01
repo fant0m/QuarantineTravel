@@ -2,7 +2,6 @@ package com.example.quarantinetravel.activity
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -25,7 +24,6 @@ import kotlin.collections.ArrayList
 
 
 class GameActivity : AppCompatActivity() {
-    private lateinit var prefs: SharedPreferences
     private var googlePlayServices : GooglePlayServices = GooglePlayServices(this)
     private lateinit var queue : RequestQueue
     private lateinit var timer : CountDownTimer

@@ -5,10 +5,10 @@ import android.media.MediaPlayer
 
 class MusicManager {
     companion object {
-        lateinit var mp: MediaPlayer
+        private lateinit var mp: MediaPlayer
         lateinit var context: Context
         var musicEnabled: Boolean = true
-        var released: Boolean = false
+        private var released: Boolean = false
 
         fun init(context: Context, musicEnabled: Boolean) {
             this.musicEnabled = musicEnabled
@@ -35,7 +35,7 @@ class MusicManager {
 
         fun release() {
             if (this::mp.isInitialized && !released) {
-                mp.reset();
+                mp.reset()
                 mp.release()
                 released = true
             }

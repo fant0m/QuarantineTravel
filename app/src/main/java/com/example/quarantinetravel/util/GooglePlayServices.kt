@@ -15,7 +15,7 @@ class GooglePlayServices(private val activity: Activity) {
     var signedInAccount : GoogleSignInAccount? = null
     val RC_SIGN_IN = 9001
     val RC_LEADERBOARD_UI = 9004
-    var leaderboards = false
+    private var leaderboards = false
 
     fun signInSilently() {
         val signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN

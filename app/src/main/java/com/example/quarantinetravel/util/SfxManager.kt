@@ -8,8 +8,8 @@ import com.example.quarantinetravel.R
 
 class SfxManager {
     companion object {
-        var soundPool: SoundPool? = null
-        var sm: IntArray? = null
+        private var soundPool: SoundPool? = null
+        private var sm: IntArray? = null
         var sfxEnabled: Boolean = true
 
         fun init(context: Context, sfxEnabled: Boolean) {

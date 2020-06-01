@@ -22,12 +22,4 @@ class HttpQueue constructor(context: Context) {
     val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
     }
-    fun <T> addToRequestQueue(req: Request<T>) {
-        req.retryPolicy = DefaultRetryPolicy(
-            10 * 1000,
-            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        )
-        requestQueue.add(req)
-    }
 }
