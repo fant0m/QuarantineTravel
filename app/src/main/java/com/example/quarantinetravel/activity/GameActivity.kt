@@ -1,6 +1,5 @@
 package com.example.quarantinetravel.activity
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -10,31 +9,20 @@ import android.widget.Button
 import android.widget.TextSwitcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.android.volley.RequestQueue
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
 import com.example.quarantinetravel.*
-import com.example.quarantinetravel.api.HttpQueue
-import com.example.quarantinetravel.game.Question
+import com.example.quarantinetravel.api.ResponseListener
+import com.example.quarantinetravel.game.Game
 import com.example.quarantinetravel.util.*
 import kotlinx.android.synthetic.main.activity_game.*
-import org.json.JSONException
-import org.json.JSONObject
-import kotlin.collections.ArrayList
 
 
 class GameActivity : AppCompatActivity() {
     private var googlePlayServices : GooglePlayServices = GooglePlayServices(this)
-    private lateinit var queue : RequestQueue
     private lateinit var timer : CountDownTimer
     private lateinit var loadingBar : LoadingBar
+    private lateinit var game : Game
+
     private val answers = arrayOfNulls <Button>(3)
-    // @todo class na questions? game /game board or something, outside of activity everything
-    private val questions: MutableList<Question> = ArrayList()
-    private var round = 0
-    private var time = 0
-    private var score = 0
-    private var life = 0
     private var init = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +35,7 @@ class GameActivity : AppCompatActivity() {
         loadingBar = LoadingBar(this)
         loadingBar.show()
 
-        queue = HttpQueue.getInstance(
-            applicationContext
-        ).requestQueue
+        game = Game(applicationContext)
 
         answer1.setOnClickListener { checkAnswer(0) }
         answer2.setOnClickListener { checkAnswer(1) }
@@ -61,10 +47,11 @@ class GameActivity : AppCompatActivity() {
         question.setInAnimation(this, android.R.anim.slide_in_left)
         question.setOutAnimation(this, android.R.anim.slide_out_right)
 
-        life = 5
+        game.init()
         drawLife()
         drawScore()
         newRound()
+        game.newRound(responseListener())
 
         MusicManager.play(R.raw.musicgame, true)
     }
@@ -74,116 +61,36 @@ class GameActivity : AppCompatActivity() {
         MusicManager.release()
     }
 
-    private fun prepareQuestion (draw: Boolean = false) {
-        val randomTerm =
-            Generator.randomTerm()
-        val url = "http://api.skypicker.com/locations?term=${randomTerm}&locale=en-US&location_types=airport&limit=10&active_only=true&sort=name"
-        val request = JsonObjectRequest(url, null, Response.Listener { response ->
-            if (null != response) {
-                try {
-                    val locations = response.getJSONArray("locations")
-                    val locationsLength = locations.length()
-                    if (locationsLength >= 3) {
-                        val OPTIONS = 3
-                        val chosenIndexes = IntArray(OPTIONS)
-
-                        var filled = 0
-                        val question =
-                            Question()
-
-                        while (filled < OPTIONS) {
-                            val randomIndex =
-                                Generator.randomNumber(
-                                    0,
-                                    locationsLength - 1
-                                )
-                            if (!chosenIndexes.contains(randomIndex + 1)) {
-                                val location: JSONObject = locations[randomIndex] as JSONObject
-                                if (filled === 0) {
-                                    question.name = "Which airport has code ${location.getString("code")}?"
-                                    question.addAnswer(location.getString("name"), true)
-                                } else {
-                                    question.addAnswer(location.getString("name"))
-                                }
-
-                                chosenIndexes[filled] = randomIndex + 1
-                                filled++
-                            }
-                        }
-
-
-                        question.shuffleAnswers()
-                        questions.add(question)
-                        if (!init) {
-                            init = true
-                            loadingBar.hide()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                boardBg.z = 0F
-                            }
-                        }
-                        if (draw) {
-                            drawRound()
-                        }
-                    } else {
-                        prepareQuestion(draw)
-                    }
-                } catch (e: JSONException) {
-                    val builder1 = AlertDialog.Builder(this)
-                    builder1.setMessage("catch error..")
-                    builder1.setCancelable(true)
-
-                    val alert11 = builder1.create()
-                    alert11.show()
-                    // @todo error message
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    e.printStackTrace()
-                }
-            }
-        }, Response.ErrorListener {
-            it.printStackTrace()
-            // @todo error message
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        })
-        queue.add(request)
-    }
-
     private fun newRound () {
-        time = 5
-        round++
-
         answers.forEach {
             it!!.background = ContextCompat.getDrawable(this,
                 R.drawable.text_button
             )
         }
-
-        prepareQuestion(true)
     }
 
     private fun drawRound () {
-        val question = questions[round - 1]
+        val question = game.getCurrentQuestion()
 
         answers.forEach {
             it!!.isEnabled = true
         }
 
         val questionText: TextSwitcher = findViewById(R.id.question)
-        questionText.setText(round.toString() + ". " + question.name)
+        questionText.setText(game.round.toString() + ". " + question.name)
 
         answer1.text = question.answers[0].answer
         answer2.text = question.answers[1].answer
         answer3.text = question.answers[2].answer
 
-        val ROUND_SECONDS = 500
-        timer = object : CountDownTimer((ROUND_SECONDS * 1000).toLong(), 1000) {
+        timer = object : CountDownTimer((Game.ROUND_SECONDS * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                time = (millisUntilFinished / 1000).toInt()
+                game.time = (millisUntilFinished / 1000).toInt()
                 drawTime()
             }
 
             override fun onFinish() {
+                game.timeOut()
                 wrongAnswer(-1)
             }
         }.start()
@@ -199,8 +106,7 @@ class GameActivity : AppCompatActivity() {
         }
 
         timer.cancel()
-        val question = questions[round - 1]
-        if (question.answers[answerIndex].correct) {
+        if (game.isAnswerCorrect(answerIndex)) {
             correctAnswer(answerIndex)
         } else {
             wrongAnswer(answerIndex)
@@ -213,24 +119,16 @@ class GameActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                val question = questions[round - 1]
-
-                val correctIndex = question.answers.indexOfFirst { it.correct }
-                if (answerIndex === correctIndex) {
+                val correctIndex = game.getCorrectAnswerIndex()
+                if (answerIndex == correctIndex) {
                     SfxManager.play(resources.getInteger(R.integer.sfx_success))
-                    answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext,
-                        R.drawable.longbuttonsuccess
-                    )
+                    answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttonsuccess)
                 } else {
                     SfxManager.play(resources.getInteger(R.integer.sfx_error))
-                    if (answerIndex !== -1) {
-                        answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext,
-                            R.drawable.longbuttondanger
-                        )
+                    if (answerIndex != -1) {
+                        answers[answerIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttondanger)
                     }
-                    answers[correctIndex]!!.background = ContextCompat.getDrawable(applicationContext,
-                        R.drawable.longbuttonsuccess
-                    )
+                    answers[correctIndex]!!.background = ContextCompat.getDrawable(applicationContext, R.drawable.longbuttonsuccess)
                 }
 
                 feedbackTextCorrect.visibility = if (answer) View.VISIBLE else View.INVISIBLE
@@ -250,19 +148,40 @@ class GameActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 feedback.visibility = View.INVISIBLE
-                newRound()
+                game.newRound(responseListener())
             }
         }.start()
     }
 
+    private fun responseListener () : ResponseListener {
+        return object : ResponseListener {
+            override fun onFetchResponse(response: Int) {
+                if (response == ResponseListener.RESULT_OK) {
+                    if (!init) {
+                        init = true
+                        loadingBar.hide()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            boardBg.z = 0F
+                        }
+                    }
+
+                    newRound()
+                    drawRound()
+                } else {
+                   // @todo error message
+                   val intent = Intent(applicationContext, MainActivity::class.java)
+                   startActivity(intent)
+                }
+            }
+        }
+    }
+
     private fun correctAnswer (answerIndex: Int) {
-        score++
         setAnswerBox(true, answerIndex)
     }
 
     private fun wrongAnswer (answerIndex: Int) {
-        life--
-        if (life > 0) {
+        if (!game.gameOver) {
             setAnswerBox(false, answerIndex)
         } else {
             SfxManager.play(resources.getInteger(R.integer.sfx_tada))
@@ -271,27 +190,27 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun gameOver () {
-        if (score > 0) {
-            googlePlayServices.addLeaderboardScore(score.toLong())
+        if (game.score > 0) {
+            googlePlayServices.addLeaderboardScore(game.score.toLong())
         }
 
         MusicManager.release()
 
         val intent = Intent(this, GameResultActivity::class.java)
-        intent.putExtra("score", score)
+        intent.putExtra("score", game.score)
         startActivity(intent)
     }
 
     private fun drawScore () {
-        scoreValue.text = score.toString()
+        scoreValue.text = game.score.toString()
     }
 
     private fun drawLife () {
-        ratingBar.numStars = life
-        ratingBar.rating = life.toFloat()
+        ratingBar.numStars = game.life
+        ratingBar.rating = game.life.toFloat()
     }
 
     private fun drawTime () {
-        timeValue.text = (time + 1).toString()
+        timeValue.text = (game.time + 1).toString()
     }
 }
