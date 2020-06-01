@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.TextSwitcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
@@ -145,12 +144,9 @@ class GameActivity : AppCompatActivity() {
             }
         }, Response.ErrorListener {
             it.printStackTrace()
-            val builder1 = AlertDialog.Builder(this)
-            builder1.setMessage("Response.ErrorListener..")
-            builder1.setCancelable(true)
-
-            val alert11 = builder1.create()
-            alert11.show()
+            // @todo error message
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         })
         queue.add(request)
     }
@@ -198,7 +194,7 @@ class GameActivity : AppCompatActivity() {
     private fun checkAnswer (answerIndex: Int) {
         SfxManager.play(resources.getInteger(R.integer.sfx_click))
         answers[answerIndex]!!.background = ContextCompat.getDrawable(this,
-            R.drawable.longbuttonhover2
+            R.drawable.longbuttonhover
         )
         for (answer in answers) {
             answer?.isEnabled = false
@@ -271,7 +267,7 @@ class GameActivity : AppCompatActivity() {
         if (life > 0) {
             setAnswerBox(false, answerIndex)
         } else {
-            SfxManager.play(resources.getInteger(R.integer.sfx_error))
+            SfxManager.play(resources.getInteger(R.integer.sfx_tada))
             gameOver()
         }
     }

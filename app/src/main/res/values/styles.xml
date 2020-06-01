@@ -29,7 +29,7 @@
         <item name="toolbarStyle">@style/custom_toolbar</item>
     </style>
 
-    <style name="custom_toolbar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="custom_toolbar">
         <item name="titleTextColor">@color/colorPrimaryDark</item>
     </style>
 </resources>

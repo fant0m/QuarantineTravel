@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -49,6 +51,8 @@ class MainActivity : AppCompatActivity() {
         MusicManager.play(R.raw.musicintro, true)
 
         initTitleAnimation()
+
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     override fun onDestroy() {
