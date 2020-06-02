@@ -26,6 +26,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#80000000"
+        android:foregroundGravity="center"
         app:layout_constraintBottom_toTopOf="@+id/answers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,16 +36,16 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/colorWhite"
-            android:textSize="42sp"
-            android:padding="6dp"
+            android:textSize="32sp"
+            android:padding="8dp"
             android:fontFamily="sans-serif-light" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/colorWhite"
-            android:textSize="42sp"
-            android:padding="6dp"
+            android:textSize="32sp"
+            android:padding="8dp"
             android:fontFamily="sans-serif-light" />
     </TextSwitcher>
 

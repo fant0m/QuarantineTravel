@@ -88,7 +88,12 @@ class GameActivity : AppCompatActivity() {
 
         answer1.text = question.answers[0].answer
         answer2.text = question.answers[1].answer
-        answer3.text = question.answers[2].answer
+        if (question.answersLength == 3) {
+            answer3.text = question.answers[2].answer
+            answer3.visibility = View.VISIBLE
+        } else {
+            answer3.visibility = View.INVISIBLE
+        }
 
         timer = object : CountDownTimer((Game.ROUND_SECONDS * 1000).toLong(), 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -155,6 +160,7 @@ class GameActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 feedback.visibility = View.INVISIBLE
+                loadingBar.show()
                 game.newRound(responseListener())
             }
         }.start()
@@ -166,11 +172,12 @@ class GameActivity : AppCompatActivity() {
                 if (response == GameListener.RESULT_OK) {
                     if (!init) {
                         init = true
-                        loadingBar.hide()
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             boardBg.z = 0F
                         }
                     }
+
+                    loadingBar.hide()
 
                     newRound()
                     drawRound()
@@ -202,6 +209,10 @@ class GameActivity : AppCompatActivity() {
         }
 
         MusicManager.release()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            boardBg.z = 2F
+        }
 
         val intent = Intent(this, GameResultActivity::class.java)
         intent.putExtra("score", game.score)

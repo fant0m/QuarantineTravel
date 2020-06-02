@@ -52,10 +52,16 @@ class Game constructor(context: Context) {
 
     private fun generateQuestion (gameListener: GameListener) {
         val randomQuestionType = Generator.randomDouble()
-        if (randomQuestionType < 1) {
-            val airportCodeQuestion = AirportCodeQuestion(api)
-            airportCodeQuestion.prepareQuestion(gameListener)
-            questions.add(airportCodeQuestion)
+        val question: Question
+
+        if (randomQuestionType < 0.1) {
+            question = AirportCodeQuestion(api)
+            question.prepareQuestion(gameListener)
+            questions.add(question)
+        } else if (randomQuestionType < 1) {
+            question = DirectFlightQuestion(api)
+            question.prepareQuestion(gameListener)
+            questions.add(question)
         }
     }
 
