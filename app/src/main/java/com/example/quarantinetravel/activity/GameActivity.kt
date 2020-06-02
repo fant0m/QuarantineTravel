@@ -10,7 +10,7 @@ import android.widget.TextSwitcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.quarantinetravel.*
-import com.example.quarantinetravel.api.ResponseListener
+import com.example.quarantinetravel.api.GameListener
 import com.example.quarantinetravel.game.Game
 import com.example.quarantinetravel.util.*
 import kotlinx.android.synthetic.main.activity_game.*
@@ -153,10 +153,10 @@ class GameActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun responseListener () : ResponseListener {
-        return object : ResponseListener {
-            override fun onFetchResponse(response: Int) {
-                if (response == ResponseListener.RESULT_OK) {
+    private fun responseListener () : GameListener {
+        return object : GameListener {
+            override fun onResponse(response: Int) {
+                if (response == GameListener.RESULT_OK) {
                     if (!init) {
                         init = true
                         loadingBar.hide()

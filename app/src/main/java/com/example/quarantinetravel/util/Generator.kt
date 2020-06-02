@@ -22,6 +22,10 @@ class Generator {
         fun randomNumber (from: Int, to: Int): Int {
             return (from until to + 1).random()
         }
+
+        fun randomDouble () : Double {
+            return Math.random()
+        }
     }
 
 }

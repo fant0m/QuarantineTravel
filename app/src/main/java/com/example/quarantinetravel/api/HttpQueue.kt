@@ -1,8 +1,6 @@
 package com.example.quarantinetravel.api
 
 import android.content.Context
-import com.android.volley.DefaultRetryPolicy
-import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 
@@ -19,6 +17,7 @@ class HttpQueue constructor(context: Context) {
                 }
             }
     }
+
     val requestQueue: RequestQueue by lazy {
         Volley.newRequestQueue(context.applicationContext)
     }

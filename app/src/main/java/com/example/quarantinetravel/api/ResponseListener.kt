@@ -1,9 +1,7 @@
 package com.example.quarantinetravel.api
 
+import org.json.JSONObject
+
 interface ResponseListener {
-    companion object {
-        const val RESULT_OK = 1
-        const val RESULT_ERROR = 2
-    }
-    fun onFetchResponse(response: Int)
+    fun onFetchResponse(response: JSONObject?)
 }
