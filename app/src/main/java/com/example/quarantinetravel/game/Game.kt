@@ -10,7 +10,7 @@ class Game constructor(context: Context) {
 
     companion object {
         const val PLAYER_LIVES = 5
-        const val ROUND_SECONDS = 8
+        const val ROUND_SECONDS = 10
     }
 
     private val questions: MutableList<Question> = ArrayList()
@@ -54,14 +54,33 @@ class Game constructor(context: Context) {
         val randomQuestionType = Generator.randomDouble()
         val question: Question
 
-        if (randomQuestionType < 0.1) {
-            question = AirportCodeQuestion(api)
-            question.prepareQuestion(gameListener)
-            questions.add(question)
-        } else if (randomQuestionType < 1) {
-            question = DirectFlightQuestion(api)
-            question.prepareQuestion(gameListener)
-            questions.add(question)
+        // @todo probabilities
+        when {
+            randomQuestionType < 0.1 -> {
+                question = AirportCodeQuestion(api)
+                question.prepareQuestion(gameListener)
+                questions.add(question)
+            }
+            randomQuestionType < 0.9 -> {
+                question = AirportCountryQuestion(api)
+                question.prepareQuestion(gameListener)
+                questions.add(question)
+            }
+            randomQuestionType < 0.94 -> {
+                question = PriceQuestion(api)
+                question.prepareQuestion(gameListener)
+                questions.add(question)
+            }
+            randomQuestionType < 0.95 -> {
+                question = DistanceQuestion(api)
+                question.prepareQuestion(gameListener)
+                questions.add(question)
+            }
+            randomQuestionType < 1 -> {
+                question = DirectFlightQuestion(api)
+                question.prepareQuestion(gameListener)
+                questions.add(question)
+            }
         }
     }
 

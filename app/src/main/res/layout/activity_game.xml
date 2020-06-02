@@ -26,27 +26,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#80000000"
-        android:foregroundGravity="center"
         app:layout_constraintBottom_toTopOf="@+id/answers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topBarValues">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/colorWhite"
-            android:textSize="32sp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center|center_horizontal|center_vertical"
             android:padding="8dp"
-            android:fontFamily="sans-serif-light" />
+            android:textColor="@color/colorWhite"
+            android:textSize="30sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/colorWhite"
-            android:textSize="32sp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center|center_horizontal|center_vertical"
             android:padding="8dp"
-            android:fontFamily="sans-serif-light" />
+            android:textColor="@color/colorWhite"
+            android:textSize="30sp" />
     </TextSwitcher>
 
     <ImageView
@@ -55,17 +56,17 @@
         android:layout_height="64dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:contentDescription="@string/bonus"
         android:src="@drawable/bonus"
-        android:translationY="16dp"
+        android:translationY="12dp"
         app:layout_constraintBottom_toTopOf="@+id/question"
-        app:layout_constraintEnd_toEndOf="@+id/boardBg"
-        android:contentDescription="@string/bonus" />
+        app:layout_constraintEnd_toEndOf="@+id/boardBg" />
 
     <LinearLayout
         android:id="@+id/answers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="80dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
