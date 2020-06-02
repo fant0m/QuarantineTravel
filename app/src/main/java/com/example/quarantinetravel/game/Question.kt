@@ -9,6 +9,7 @@ abstract class Question(val api: KiwiApi) {
     abstract val type : QuestionType
     abstract val answersLength: Int
     abstract val correctAnswerScore: Int
+    abstract val isBonus: Boolean
 
     fun addAnswer (answer: String, correct: Boolean = false) {
        answers.add(Answer(answer, correct))

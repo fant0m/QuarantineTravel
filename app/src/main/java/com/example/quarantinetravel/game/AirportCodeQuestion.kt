@@ -14,6 +14,8 @@ class AirportCodeQuestion(api: KiwiApi) : Question(api) {
         get() = 3
     override val correctAnswerScore: Int
         get() = 1
+    override val isBonus: Boolean
+        get() = false
 
     override fun prepareQuestion(gameListener: GameListener) {
         val randomTerm = Generator.randomTerm()

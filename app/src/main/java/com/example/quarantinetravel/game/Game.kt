@@ -41,9 +41,12 @@ class Game constructor(context: Context) {
     }
 
     private fun wrongAnswer () {
-        life--
-        if (life == 0) {
-            gameOver = true
+        val question = getCurrentQuestion()
+        if (!question.isBonus) {
+            life--
+            if (life == 0) {
+                gameOver = true
+            }
         }
     }
 

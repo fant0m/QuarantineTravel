@@ -59,6 +59,7 @@ class GameActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         MusicManager.release()
+        timer.cancel()
     }
 
     private fun newRound () {
@@ -71,6 +72,12 @@ class GameActivity : AppCompatActivity() {
 
     private fun drawRound () {
         val question = game.getCurrentQuestion()
+
+        if (question.isBonus) {
+            bonus.visibility = View.VISIBLE
+        } else {
+            bonus.visibility = View.INVISIBLE
+        }
 
         answers.forEach {
             it!!.isEnabled = true

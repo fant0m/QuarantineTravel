@@ -48,11 +48,23 @@
             android:fontFamily="sans-serif-light" />
     </TextSwitcher>
 
+    <ImageView
+        android:id="@+id/bonus"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:src="@drawable/bonus"
+        android:translationY="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/question"
+        app:layout_constraintEnd_toEndOf="@+id/boardBg"
+        android:contentDescription="@string/bonus" />
+
     <LinearLayout
         android:id="@+id/answers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
+        android:layout_marginBottom="96dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
