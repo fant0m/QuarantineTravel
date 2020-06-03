@@ -209,8 +209,8 @@
         android:id="@+id/feedback"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#70000000"
         android:translationZ="5dp"
+        android:background="#70000000"
         android:visibility="invisible"
         tools:layout_editor_absoluteY="64dp">
 
@@ -261,5 +261,15 @@
             app:srcCompat="@drawable/check" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/airlineLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:contentDescription="@string/airline_logo"
+        app:layout_constraintEnd_toEndOf="@+id/boardBg"
+        app:layout_constraintStart_toStartOf="@+id/boardBg"
+        app:layout_constraintTop_toBottomOf="@+id/question" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

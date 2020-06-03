@@ -5,5 +5,6 @@ enum class QuestionType {
     DIRECT_FLIGHT,
     DISTANCE,
     PRICE,
-    AIRPORT_COUNTRY
+    AIRPORT_COUNTRY,
+    AIRLINE_LOGO
 }

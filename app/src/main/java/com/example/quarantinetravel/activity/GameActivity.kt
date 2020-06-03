@@ -9,11 +9,19 @@ import android.widget.Button
 import android.widget.TextSwitcher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.example.quarantinetravel.*
+import com.example.quarantinetravel.R
 import com.example.quarantinetravel.api.GameListener
+import com.example.quarantinetravel.game.AirlineLogoQuestion
 import com.example.quarantinetravel.game.Game
-import com.example.quarantinetravel.util.*
+import com.example.quarantinetravel.game.QuestionType
+import com.example.quarantinetravel.util.GooglePlayServices
+import com.example.quarantinetravel.util.LoadingBar
+import com.example.quarantinetravel.util.MusicManager
+import com.example.quarantinetravel.util.SfxManager
+import com.squareup.picasso.Callback
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_game.*
+import java.lang.Exception
 
 
 class GameActivity : AppCompatActivity() {
@@ -59,7 +67,9 @@ class GameActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         MusicManager.release()
-        timer.cancel()
+        if (this::timer.isInitialized) {
+            timer.cancel()
+        }
     }
 
     private fun newRound () {
@@ -77,6 +87,12 @@ class GameActivity : AppCompatActivity() {
             bonus.visibility = View.VISIBLE
         } else {
             bonus.visibility = View.INVISIBLE
+        }
+
+        if (question.type == QuestionType.AIRLINE_LOGO) {
+            airlineLogo.visibility = View.VISIBLE
+        } else {
+            airlineLogo.visibility = View.INVISIBLE
         }
 
         answers.forEach {
@@ -168,24 +184,37 @@ class GameActivity : AppCompatActivity() {
 
     private fun responseListener () : GameListener {
         return object : GameListener {
-            override fun onResponse(response: Int) {
-                if (response == GameListener.RESULT_OK) {
-                    if (!init) {
-                        init = true
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            boardBg.z = 0F
-                        }
+            override fun onResponse(response: Int) = if (response == GameListener.RESULT_OK) {
+                if (!init) {
+                    init = true
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        boardBg.z = 0F
                     }
+                }
 
+                val currentQuestion = game.getCurrentQuestion()
+                if (currentQuestion.type == QuestionType.AIRLINE_LOGO) {
+                    Picasso.get().load((currentQuestion as AirlineLogoQuestion).logoUrl).into(airlineLogo, object : Callback {
+                        override fun onSuccess() {
+                            loadingBar.hide()
+
+                            newRound()
+                            drawRound()
+                        }
+
+                        override fun onError(e: Exception?) {
+                        }
+                    })
+                } else {
                     loadingBar.hide()
 
                     newRound()
                     drawRound()
-                } else {
-                   // @todo error message
-                   val intent = Intent(applicationContext, MainActivity::class.java)
-                   startActivity(intent)
                 }
+            } else {
+               // @todo error message
+               val intent = Intent(applicationContext, MainActivity::class.java)
+               startActivity(intent)
             }
         }
     }

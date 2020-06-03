@@ -54,32 +54,36 @@ class Game constructor(context: Context) {
         val randomQuestionType = Generator.randomDouble()
         val question: Question
 
-        // @todo probabilities
         when {
-            randomQuestionType < 0.1 -> {
+            randomQuestionType < 0.25 -> {
                 question = AirportCodeQuestion(api)
-                question.prepareQuestion(gameListener)
                 questions.add(question)
+                question.prepareQuestion(gameListener)
+            }
+            randomQuestionType < 0.5 -> {
+                question = AirlineLogoQuestion(api)
+                questions.add(question)
+                question.prepareQuestion(gameListener)
+            }
+            randomQuestionType < 0.6 -> {
+                question = AirportCountryQuestion(api)
+                questions.add(question)
+                question.prepareQuestion(gameListener)
+            }
+            randomQuestionType < 0.8 -> {
+                question = PriceQuestion(api)
+                questions.add(question)
+                question.prepareQuestion(gameListener)
             }
             randomQuestionType < 0.9 -> {
-                question = AirportCountryQuestion(api)
-                question.prepareQuestion(gameListener)
-                questions.add(question)
-            }
-            randomQuestionType < 0.94 -> {
-                question = PriceQuestion(api)
-                question.prepareQuestion(gameListener)
-                questions.add(question)
-            }
-            randomQuestionType < 0.95 -> {
                 question = DistanceQuestion(api)
-                question.prepareQuestion(gameListener)
                 questions.add(question)
+                question.prepareQuestion(gameListener)
             }
             randomQuestionType < 1 -> {
                 question = DirectFlightQuestion(api)
-                question.prepareQuestion(gameListener)
                 questions.add(question)
+                question.prepareQuestion(gameListener)
             }
         }
     }
