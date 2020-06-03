@@ -24,12 +24,14 @@ class AirlineLogoQuestion(api: KiwiApi) : Question(api) {
                 } else {
                     val airlines = response.getJSONArray("airlines")
 
-                    name = "Which airline has following logo?"
+                    name = "Which airline has the following logo?"
                     logoUrl = KiwiApi.AIRLINES_LOGO_URL + (airlines[0] as JSONObject).getString("id") + ".png"
 
                     addAnswer((airlines[0] as JSONObject).getString("name"), true)
                     addAnswer((airlines[1] as JSONObject).getString("name"))
                     addAnswer((airlines[2] as JSONObject).getString("name"))
+
+                    shuffleAnswers()
 
                     gameListener.onResponse(GameListener.RESULT_OK)
                 }

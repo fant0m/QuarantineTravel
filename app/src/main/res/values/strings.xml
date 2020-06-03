@@ -23,7 +23,7 @@
     <string name="music">Music</string>
     <string name="sfx">SFX</string>
     <string name="google_play_services">Google play services</string>
-    <string name="about1">Quarantine Travel was developed as challenge \"can full-stack web developer make an android game\"? Before the challenge I had zero knowledge of Kotlin and almost no knowledge of Android platform. There wouldn\'t be such motivation without Kiwi\'s mobile challenge, so big thank you!</string>
+    <string name="about1">Quarantine Travel was developed as challenge \"can full-stack web developer make an android game\"? Before the challenge I had zero knowledge of Kotlin and almost no knowledge of Android platform. There wouldn\'t be such motivation without Kiwi\'s mobile challenge, so thank you!</string>
     <string name="about2">Game falls into \"quiz\" category. It has many different types of questions, which are focused on (air) travelling. The data comes from Kiwi.com API. Each player has 5 lives. Wrong answer causes 1 life, except the bonus questions where you might even earn more points! The goal of the game is to gain the highest score. Players can compare their results with everyone across the globe!</string>
     <string name="exit_info">Are you sure you want to exit the game?</string>
     <string name="cancel">Cancel</string>

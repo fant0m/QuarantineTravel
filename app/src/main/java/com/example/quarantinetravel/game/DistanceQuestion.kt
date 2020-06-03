@@ -70,7 +70,7 @@ class DistanceQuestion(api: KiwiApi) : Question(api) {
 
                                 val distance = (data[0] as JSONObject).getDouble("distance")
 
-                                addAnswer("$distance km", true)
+                                addAnswer(String.format("%.2f", distance) + " km", true)
                                 addAnswer(String.format("%.2f", distance * 0.33) + " km")
                                 addAnswer(String.format("%.2f", distance * 1.66) + " km")
 
