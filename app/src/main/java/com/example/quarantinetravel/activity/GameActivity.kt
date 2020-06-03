@@ -66,10 +66,18 @@ class GameActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        MusicManager.release()
         if (this::timer.isInitialized) {
             timer.cancel()
         }
+    }
+
+    override fun onBackPressed() {
+        MusicManager.stop()
+        if (this::timer.isInitialized) {
+            timer.cancel()
+        }
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun newRound () {

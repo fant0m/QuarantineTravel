@@ -28,11 +28,8 @@ class SettingsActivity : AppCompatActivity() {
             .commit()
 
         val prefListener = OnSharedPreferenceChangeListener { prefs, key ->
-            println(key + " changed")
             if (key == getString(R.string.settings_sfx)) {
-                println("before" + SfxManager.sfxEnabled)
                 SfxManager.sfxEnabled = prefs.getBoolean(key, false)
-                println("after" + SfxManager.sfxEnabled)
             } else if (key == getString(R.string.settings_music)) {
                 val value = prefs.getBoolean(key, false)
                 MusicManager.musicEnabled = value

@@ -27,6 +27,10 @@ class MusicManager {
             }
         }
 
+        fun stop () {
+            mp.stop()
+        }
+
         fun restart(sound: Int, loop: Boolean) {
             if (released) {
                 play(sound, loop)
