@@ -17,7 +17,7 @@ class KiwiApi constructor(context: Context) {
     private lateinit var airlines : JSONArray
 
     companion object {
-        const val API_URL = "http://api.skypicker.com"
+        const val API_URL = "https://api.skypicker.com"
         const val LOCATION_URL = "/locations?"
         const val FLIGHTS_URL = "/flights?"
         const val AIRLINES_URL = "/carriers"
